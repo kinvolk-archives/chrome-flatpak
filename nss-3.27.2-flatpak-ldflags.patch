@@ -1,0 +1,75 @@
+--- nss/nss/coreconf/Linux.mk
++++ nss/nss/coreconf/Linux.mk
+@@ -159,7 +159,7 @@
+ ifneq ($(USE_ASAN),1)
+ DSO_LDOPTS		+= $(if $(findstring 2.11.90.0.8,$(shell ld -v)),,$(ZDEFS_FLAG))
+ endif
+-LDFLAGS			+= $(ARCHFLAG)
++LDFLAGS			+= $(ARCHFLAG) -L/app/lib
+ 
+ # On Maemo, we need to use the -rpath-link flag for even the standard system
+ # library directories
+--- nss/nss/lib/util/config.mk
++++ nss/nss/lib/util/config.mk
+@@ -43,3 +43,5 @@
+ 
+ endif
+ 
++EXTRA_SHARED_LIBS += -L/app/lib
++
+--- nss/nss/coreconf/source.mk
++++ nss/nss/coreconf/source.mk
+@@ -13,7 +13,7 @@
+ 
+ ifndef SOURCE_PREFIX
+     ifndef BUILD_TREE
+-	SOURCE_PREFIX = $(CORE_DEPTH)/../dist
++	SOURCE_PREFIX = $(CORE_DEPTH)/dist
+     else
+ 	SOURCE_PREFIX = $(BUILD_TREE)/dist
+     endif
+--- nss/nss/coreconf/UNIX.mk
++++ nss/nss/coreconf/UNIX.mk
+@@ -20,8 +20,8 @@
+ endif
+ 
+ ifdef BUILD_TREE
+-NSINSTALL_DIR  = $(BUILD_TREE)/nss
+-NSINSTALL      = $(BUILD_TREE)/nss/nsinstall
++NSINSTALL_DIR  = /run/build/nss/nss/nss
++NSINSTALL      = /run/build/nss/nss/nss/nsinstall
+ else
+ NSINSTALL_DIR  = $(CORE_DEPTH)/coreconf/nsinstall
+ NSINSTALL      = $(NSINSTALL_DIR)/$(OBJDIR_NAME)/nsinstall
+--- nss/nss/coreconf/rules.mk
++++ nss/nss/coreconf/rules.mk
+@@ -389,7 +389,7 @@
+ core_abspath = '$(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(1),$(PWD)/$(1)))'
+ 
+ $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.c
+-	@$(MAKE_OBJDIR)
++	@-$(MAKE_OBJDIR)
+ ifdef USE_NT_C_SYNTAX
+ 	$(CC) -Fo$@ -c $(CFLAGS) $(call core_abspath,$<)
+ else
+--- nss/nss/lib/softoken/config.mk
++++ nss/nss/lib/softoken/config.mk
+@@ -58,6 +58,8 @@
+ 	$(NULL)
+ endif
+ 
++EXTRA_SHARED_LIBS += -L/app/lib
++
+ ifeq ($(OS_TARGET),AIX)
+ OS_LIBS += -lpthread
+ endif
+--- nss/nss/lib/softoken/manifest.mn
++++ nss/nss/lib/softoken/manifest.mn
+@@ -5,7 +5,6 @@
+ CORE_DEPTH = ../..
+ 
+ MODULE = nss
+-DIRS = legacydb
+ 
+ LIBRARY_NAME = softokn
+ LIBRARY_VERSION = 3

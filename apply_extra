@@ -1,0 +1,8 @@
+#!/bin/sh
+
+ar x chrome.deb
+rm -f chrome.deb
+tar xf data.tar.xz
+rm -f control.tar.gz data.tar.gz debian-binary
+mv usr/* .
+rmdir usr

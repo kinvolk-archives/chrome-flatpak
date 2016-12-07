@@ -1,0 +1,133 @@
+{
+  "app-id": "com.google.Chrome",
+  "runtime": "com.endlessm.Platform",
+  "runtime-version": "master",
+  "sdk": "com.endlessm.Sdk",
+  "branch": "master",
+  "command": "google-chrome",
+  "separate-locales": false,
+  "build-options": {
+    "env": {
+      "USE_64": "1"
+    }
+  },
+  "finish-args": [
+    /* X11 + XShm access */
+    "--share=ipc", "--socket=x11",
+    /* Wayland access */
+    "--socket=wayland",
+    /* Network access */
+    "--share=network"
+  ],
+  "modules": [
+    {
+      "name": "alsa-lib",
+      "config-opts": [
+        "--disable-maintainer-mode",
+        "--enable-shared",
+        "--disable-resmgr",
+        "--enable-rawmidi",
+        "--enable-seq",
+        "--enable-aload"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "http://ftp.osuosl.org/pub/blfs/conglomeration/alsa-lib/alsa-lib-1.1.2.tar.bz2",
+          "sha256": "d38dacd9892b06b8bff04923c380b38fb2e379ee5538935ff37e45b395d861d6"
+        }
+      ]
+    },
+    {
+      "name": "expat",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://netcologne.dl.sourceforge.net/project/expat/expat/2.2.0/expat-2.2.0.tar.bz2",
+          "sha256": "d9e50ff2d19b3538bd2127902a89987474e1a4db8e43a66a4d1a712ab9a504ff"
+        }
+      ]
+    },
+    {
+      "name": "nspr",
+      "build-options": {
+        "arch": {
+          "x86_64": {
+            "config-opts": ["--enable-64bit"]
+          }
+        }
+      },
+      "no-autogen": true,
+      "subdir": "nspr",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://archive.mozilla.org/pub/nspr/releases/v4.13.1/src/nspr-4.13.1.tar.gz",
+          "sha256": "5e4c1751339a76e7c772c0c04747488d7f8c98980b434dc846977e43117833ab"
+        }
+      ]
+    },
+    {
+      "name": "nss",
+      "build-options": {
+        "cflags": "-I/app/include/nspr",
+        "env": {
+          "NSS_ENABLE_WERROR": "0",
+          "BUILD_OPT": "1",
+          "NSS_USE_SYSTEM_SQLITE": "1",
+          "NSDISTMODE": "copy",
+          "NSS_ENABLE_ECC": "1",
+          "FREEBL_NO_DEPEND": "1",
+          "ASFLAGS": "",
+          "INCLUDES": "-I/app/include/nspr -I/run/build/nss/nss/lib/util -I/run/build/nss/nss/lib/softoken -I/run/build/nss/nss/lib/freebl -I/run/build/nss/nss/lib/freebl/ecl -I/run/build/nss/nss/lib/libpkix/include -I/run/build/nss/nss/lib/certdb -I/run/build/nss/nss/lib/pk11wrap -I/run/build/nss/nss/lib/cryptohi -I/run/build/nss/nss/lib/certhigh -I/run/build/nss/nss/lib/pkcs7 -I/run/build/nss/nss/lib/smime -I/run/build/nss/nss/lib/dbm/include -I/run/build/nss/nss/lib/base -I/run/build/nss/nss/lib/libpkix/pkix_pl_nss/system -I/run/build/nss/nss/lib/libpkix/pkix_pl_nss/pki -I/run/build/nss/nss/lib/libpkix/pkix/util -I/run/build/nss/nss/lib/libpkix/pkix/checker -I/run/build/nss/nss/lib/libpkix/pkix/results -I/run/build/nss/nss/lib/libpkix/pkix/certsel -I/run/build/nss/nss/lib/libpkix/pkix/crlsel -I/run/build/nss/nss/lib/libpkix/pkix/params -I/run/build/nss/nss/lib/pki -I/run/build/nss/nss/lib/libpkix/pkix/store -I/run/build/nss/nss/lib/libpkix/pkix/top -I/run/build/nss/nss/lib/dev -I/run/build/nss/nss/lib/libpkix/pkix_pl_nss/module -I/run/build/nss/nss/lib/ssl -I/run/build/nss/nss/lib/nss",
+          "LDFLAGS": "-L/app/lib",
+          "BUILD_TREE": "../.."
+        },
+        "arch": {
+          "x86_64": {
+            "env": {
+              "USE_64": "1"
+            }
+          }
+        }
+      },
+      "no-autogen": true,
+      "no-parallel-make": true,
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://archive.mozilla.org/pub/security/nss/releases/NSS_3_27_2_RTM/src/nss-3.27.2.tar.gz",
+          "sha256": "dc8ac8524469d0230274fd13a53fdcd74efe4aa67205dde1a4a92be87dc28524"
+        },
+        {
+          "type": "patch",
+          "path": "nss-3.27.2-flatpak-ldflags.patch"
+        },
+	{
+	  "type": "file",
+	  "path": "nss-Makefile",
+	  "dest-filename": "Makefile"
+	}
+      ]
+    },
+    {
+      "name": "chrome",
+      "no-autogen": true,
+      "sources": [
+        {
+          "type": "file",
+          "path": "apply_extra"
+        },
+        {
+          "type": "file",
+          "path": "chrome.sh"
+        },
+        {
+          "type": "file",
+          "path": "chrome-Makefile",
+          "dest-filename": "Makefile"
+        }
+      ]
+    }
+  ]
+}

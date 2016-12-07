@@ -1,8 +1,0 @@
-all:
-	true
-
-install:
-	# install apply_extra /app/bin
-	# install chrome-flatpak.sh /app/bin
-	# cp /usr/bin/ar /app/bin
-	# cp /usr/lib/libbfd-*.so /app/lib

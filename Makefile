@@ -1,7 +1,7 @@
 include Makefile.config
 
-json := org.videolan.App.json
-app := vlc
+json := com.google.Chrome.json
+app := google-chrome
 
 all: test
 

@@ -1,0 +1,8 @@
+all:
+	# Done similarily to https://git.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/nss#n62
+	cd nss && $(MAKE) -C coreconf
+	cd nss && $(MAKE) -C lib/dbm
+	cd nss && $(MAKE)
+
+install:
+	cd nss && $(MAKE) install
